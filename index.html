@@ -14,17 +14,13 @@ function render(){
    if(!status)return true;
    if(status==='Sanction')return /sanction|ofac|désignation|designation/.test(t);
    if(status==='Allégation')return /allégation|allegation|présum|presum/.test(t);
-   if(status==='Rapport')
-     return ['L003','L004','L005','L006','L007','L010'].includes(l.ID);return !/sanction|ofac|désignation|designation|allégation|allegation|présum|presum|à vérifier|a verifier/.test(t);
+   if(status==='Rapport'){
+     return ['L003','L004','L005','L006','L007','L010'].includes(l.ID);
+   }
    return true;
  };
  const matchesQuery=l=>!q||[name(l['Source ID']),name(l['Cible ID ou nom']),l['Type de lien'],l.Statut].join(' ').toLocaleLowerCase('fr').includes(q);
- 
-let ids=[...new Set([
-  ...ls.flatMap(l=>[l['Source ID'],l['Cible ID ou nom']]),
-  ...(!status?actorMatches.map(a=>a.ID):[])
-])];
-
+ let ls=links.filter(l=>matchesStatus(l)&&matchesQuery(l));
  let actorMatches=actors.filter(a=>!q||[a.Nom,a.Affiliation,a['Rôle documenté']].join(' ').toLocaleLowerCase('fr').includes(q));
  // En mode filtré, ne montrer que les acteurs associés aux relations correspondantes.
  let ids=[...new Set([...ls.flatMap(l=>[l['Source ID'],l['Cible ID ou nom']]),...(!status?actorMatches.map(a=>a.ID):[])])];
