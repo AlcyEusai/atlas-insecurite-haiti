@@ -13,9 +13,13 @@ function render(){
    const t=String(l.Statut||'').toLocaleLowerCase('fr');
    if(!status)return true;
    if(status==='Sanction')return /sanction|ofac|désignation|designation/.test(t);
-   if(status==='Allégation')return /allégation|allegation|présum|presum/.test(t);
+  
+   if(status==='Allégation'){
+     return l.ID === 'L008';
+   }
+
    if(status==='Rapport'){
-     return ['L003','L004','L005','L006','L007','L010'].includes(l.ID);
+     return ['L003','L004','L005','L006','L007','L014'].includes(l.ID);
    }
    return true;
  };
