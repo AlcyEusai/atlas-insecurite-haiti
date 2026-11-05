@@ -1,8 +1,12 @@
 <!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Atlas Haïti 2004–2026 — Réseau documentaire V5</title><style>
 :root{font-family:system-ui,Arial;color:#e6edf5;background:#0b1422}body{margin:0;padding:24px;max-width:1500px;margin:auto}h1{margin:0 0 8px;font-size:28px}p{color:#a9b8ca;line-height:1.5}a{color:#80c7ff} .layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(270px,1fr);gap:16px}.panel{background:#122238;border:1px solid #2d425b;border-radius:12px;padding:15px}select,input,button{background:#1d314a;color:white;border:1px solid #52708b;border-radius:8px;padding:10px}button{cursor:pointer} .controls{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}svg{width:100%;height:630px;background:#0e1d30;border-radius:8px}.edge{stroke:#69a7e0;stroke-width:2;opacity:.7}.edge.alleg{stroke:#e7ad64;stroke-dasharray:6 5}.node{cursor:pointer}.node circle{stroke:#d7e6f5;stroke-width:1}.node text{font-size:11px;fill:#fff;paint-order:stroke;stroke:#0b1422;stroke-width:3px;stroke-linejoin:round}.muted{color:#a9b8ca}.tag{display:inline-block;border-radius:5px;padding:3px 7px;background:#27415d;margin:3px;font-size:12px}.source{overflow-wrap:anywhere}table{border-collapse:collapse;width:100%;font-size:13px}td,th{border-bottom:1px solid #2b4057;padding:8px;text-align:left}details{margin-top:12px}summary{cursor:pointer}@media(max-width:850px){.layout{grid-template-columns:1fr}svg{height:520px}}
+
+/* Chronologie : indépendante des filtres du réseau */
+.timeline-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0}.timeline-controls input[type=range]{flex:1;min-width:170px;accent-color:#80c7ff}.timeline-year{font-size:23px;font-weight:700;color:#fff;min-width:58px}.timeline-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin-top:12px}.timeline-entry{background:#1a3049;border:1px solid #3b5775;border-radius:9px;padding:12px;text-align:left;white-space:normal;width:100%;line-height:1.45}.timeline-entry:hover,.timeline-entry:focus-visible{border-color:#80c7ff;outline:2px solid #80c7ff;outline-offset:1px}.timeline-entry small{display:block;color:#b8cbe0;margin-top:6px}.timeline-empty{color:#b8cbe0}.timeline-note{font-size:13px}
 </style><h1>Atlas historique de l'insécurité en Haïti · 2004–2026</h1><p>Registre documentaire interactif V5. Les relations sont affichées selon leur statut et accompagnées de leurs sources. Une sanction n'est pas une condamnation judiciaire. Les données ne représentent pas l'ensemble des acteurs de 2004–2026.</p>
 <div class="controls"><input id="q" placeholder="Rechercher un acteur ou un territoire" aria-label="Rechercher"><select id="status"><option value="">Tous les statuts</option><option value="Sanction">Sanctions</option><option value="Allégation">Allégations</option><option value="Rapport">Autres relations documentées</option></select><button id="reset">Réinitialiser</button></div>
 <div class="layout"><section class="panel"><h2>Réseau des relations enregistrées</h2><svg id="net" viewBox="0 0 1000 630" role="img" aria-label="Graphe des acteurs et de leurs relations documentées"></svg><p class="muted">Bleu : relation décrite dans une source officielle · Orange pointillé : allégation. Cliquez sur un nœud ou sur une ligne pour afficher sa fiche et sa source.</p></section><aside class="panel"><h2>Fiche documentaire</h2><div id="detail">Sélectionnez un acteur ou une relation pour consulter les informations et les références.</div><h3>Couverture</h3><p id="count"></p><p class="muted">La position des nœuds est purement graphique ; elle ne représente ni une localisation ni une hiérarchie.</p></aside></div>
+<section class="panel" id="chronologie" aria-labelledby="timeline-heading" style="margin:16px 0"><h2 id="timeline-heading">Chronologie documentaire · 2004–2026</h2><p class="muted">Sélectionnez une année pour afficher les relations dont la période enregistrée couvre cette année. Il s’agit de périodes déclarées dans la base, et non nécessairement des dates d’événements ou de publication.</p><div class="timeline-controls"><button type="button" id="timeline-prev" aria-label="Année précédente">−</button><label for="timeline-range">Année : <span class="timeline-year" id="timeline-year">2024</span></label><input id="timeline-range" type="range" min="2004" max="2026" step="1" value="2024" aria-label="Choisir une année entre 2004 et 2026"><button type="button" id="timeline-next" aria-label="Année suivante">+</button><button type="button" id="timeline-all">Voir toutes les périodes</button></div><p id="timeline-count" class="muted" aria-live="polite"></p><div id="timeline-list" class="timeline-list"></div><p class="muted timeline-note">Cliquez sur une relation pour ouvrir sa fiche dans le panneau « Fiche documentaire » au-dessus. Une sanction ou une allégation ne constitue pas une condamnation judiciaire.</p></section>
 <details class="panel"><summary>Consulter les relations sous forme de tableau</summary><div style="overflow:auto"><table><thead><tr><th>Source</th><th>Cible</th><th>Relation</th><th>Statut</th><th>Référence</th></tr></thead><tbody id="rows"></tbody></table></div></details>
 <details class="panel"><summary>Financements et mécanismes documentés</summary><div id="funds"></div></details>
 <p>Sources primaires principales : <a href="https://main.un.org/securitycouncil/en/sanctions/2653/materials/summaries" target="_blank" rel="noopener">Comité des sanctions ONU 2653</a> · <a href="https://digitallibrary.un.org/record/4064700" target="_blank" rel="noopener">Groupe d'experts S/2024/704</a>. Les liens propres à chaque entrée sont accessibles dans les fiches.</p>
@@ -13,14 +17,8 @@ function render(){
    const t=String(l.Statut||'').toLocaleLowerCase('fr');
    if(!status)return true;
    if(status==='Sanction')return /sanction|ofac|désignation|designation/.test(t);
-  
-   if(status==='Allégation'){
-     return l.ID === 'L008';
-   }
-
-   if(status==='Rapport'){
-     return ['L003','L004','L005','L006','L007','L014'].includes(l.ID);
-   }
+   if(status==='Allégation')return /allégation|allegation|présum|presum/.test(t);
+   if(status==='Rapport')return ['L003','L004','L005','L006','L007','L010'].includes(l.ID);
    return true;
  };
  const matchesQuery=l=>!q||[name(l['Source ID']),name(l['Cible ID ou nom']),l['Type de lien'],l.Statut].join(' ').toLocaleLowerCase('fr').includes(q);
@@ -38,4 +36,35 @@ function render(){
  if(!ls.length&&status){$('rows').innerHTML='<tr><td colspan="5">Aucune relation correspondant à ce filtre dans cette édition.</td></tr>';let t=el('text',{x:500,y:310,'text-anchor':'middle',fill:'#c4d3e6','font-size':19},svg);t.textContent='Aucune relation pour ce filtre';}
  $('count').textContent=`${nodes.length} nœuds et ${ls.length} relations visibles · ${actors.length} fiches d'acteurs dans la V5.`;
 }
- $('q').addEventListener('input',render);$('status').addEventListener('change',render);$('reset').addEventListener('click',()=>{$('q').value='';$('status').value='';render()});$('funds').innerHTML=DATA.funds.map(f=>`<p><b>${esc(f['Acteur(s)'])}</b> — ${esc(f.Mécanisme)} (${esc(f.Période)})<br><span class="muted">${esc(f['État de preuve'])} · ${esc(f.Statut)}</span><br>${sourceLink(f['URL source'])}</p>`).join('');render();</script></html>
+ // Chronologie construite exclusivement à partir de DATA.links et du champ « Période ».
+// Une date de source n'est jamais utilisée comme date d'événement.
+function timelineYears(period){
+  const years=[...String(period||'').matchAll(/(?:19|20)\d{2}/g)].map(m=>Number(m[0]));
+  if(!years.length)return null;
+  const start=Math.min(...years),end=Math.max(...years);
+  if(start<2004||end>2026)return null;
+  return {start,end};
+}
+let timelineShowAll=false;
+function renderTimeline(){
+  const year=Number($('timeline-range').value);
+  $('timeline-year').textContent=year;
+  $('timeline-range').setAttribute('aria-valuetext',String(year));
+  const entries=links.map(l=>({link:l,period:timelineYears(l['Période'])})).filter(e=>e.period&&(timelineShowAll||(e.period.start<=year&&year<=e.period.end)));
+  entries.sort((a,b)=>a.period.start-b.period.start||a.link.ID.localeCompare(b.link.ID));
+  $('timeline-count').textContent=timelineShowAll?`${entries.length} relations datées enregistrées dans la base.`:`${entries.length} relation(s) dont la période enregistrée couvre ${year}.`;
+  const list=$('timeline-list');list.replaceChildren();
+  if(!entries.length){const p=document.createElement('p');p.className='timeline-empty';p.textContent='Aucune relation datée pour cette année dans la base actuelle. Cela ne signifie pas qu’aucun événement n’a eu lieu.';list.appendChild(p);return;}
+  entries.forEach(({link:l})=>{
+    const b=document.createElement('button');b.type='button';b.className='timeline-entry';
+    const title=document.createElement('strong');title.textContent=`${name(l['Source ID'])} → ${name(l['Cible ID ou nom'])}`;b.appendChild(title);
+    const detail=document.createElement('small');detail.textContent=`${l['Type de lien']} · Période enregistrée : ${l['Période']} · ${l.Statut}`;b.appendChild(detail);
+    b.addEventListener('click',()=>{showLink(l);$('detail').scrollIntoView({behavior:'smooth',block:'nearest'});});list.appendChild(b);
+  });
+}
+$('timeline-range').addEventListener('input',()=>{timelineShowAll=false;renderTimeline()});
+$('timeline-prev').addEventListener('click',()=>{$('timeline-range').value=Math.max(2004,Number($('timeline-range').value)-1);timelineShowAll=false;renderTimeline()});
+$('timeline-next').addEventListener('click',()=>{$('timeline-range').value=Math.min(2026,Number($('timeline-range').value)+1);timelineShowAll=false;renderTimeline()});
+$('timeline-all').addEventListener('click',()=>{timelineShowAll=true;renderTimeline()});
+renderTimeline();
+$('q').addEventListener('input',render);$('status').addEventListener('change',render);$('reset').addEventListener('click',()=>{$('q').value='';$('status').value='';render()});$('funds').innerHTML=DATA.funds.map(f=>`<p><b>${esc(f['Acteur(s)'])}</b> — ${esc(f.Mécanisme)} (${esc(f.Période)})<br><span class="muted">${esc(f['État de preuve'])} · ${esc(f.Statut)}</span><br>${sourceLink(f['URL source'])}</p>`).join('');render();</script></html>
