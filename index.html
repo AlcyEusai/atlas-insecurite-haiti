@@ -19,6 +19,9 @@
 
 /* Bibliothèque documentaire V5.5 — styles isolés */
 #source-library{margin-top:16px}#source-library .lib-controls{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}#source-library .lib-controls input{flex:1;min-width:180px}#source-library .lib-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:11px}#source-library .lib-entry{background:#0e1d30;border:1px solid #2d425b;border-radius:9px;padding:13px}#source-library .lib-entry h3{font-size:16px;margin:6px 0}#source-library .lib-entry p{margin:6px 0;font-size:13px}#source-library .lib-meta{font-size:12px;color:#a9b8ca}#source-library .lib-pill{font-size:11px;border-radius:6px;padding:3px 6px;background:#294662}#source-library .lib-empty{color:#a9b8ca}
+
+/* Recherche avancée V5.6 : module indépendant */
+#advanced-search{margin-top:16px}#advanced-search .adv-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:12px 0}#advanced-search label{display:flex;flex-direction:column;gap:5px;color:#c7d7e8;font-size:13px}#advanced-search select,#advanced-search input{width:100%;box-sizing:border-box}#advanced-search .adv-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}#advanced-search .adv-result{padding:12px;border:1px solid #2d425b;border-radius:9px;margin-top:9px;background:#0e1d30}#advanced-search .adv-result h3{margin:0 0 5px;font-size:16px}#advanced-search .adv-result p{margin:4px 0;font-size:13px}#advanced-search .adv-result button{margin-top:6px}#advanced-search .adv-note{font-size:13px;color:#a9b8ca}
 </style><h1>Atlas historique de l'insécurité en Haïti · 2004–2026</h1><p>Registre documentaire interactif V5. Les relations sont affichées selon leur statut et accompagnées de leurs sources. Une sanction n'est pas une condamnation judiciaire. Les données ne représentent pas l'ensemble des acteurs de 2004–2026.</p>
 <div class="controls"><input id="q" placeholder="Rechercher un acteur ou un territoire" aria-label="Rechercher"><select id="status"><option value="">Tous les statuts</option><option value="Sanction">Sanctions</option><option value="Allégation">Allégations</option><option value="Rapport">Autres relations documentées</option></select><select id="actorCategory" aria-label="Catégorie d'acteurs"><option value="">Toutes les catégories d'acteurs</option><option value="Groupe armé">Groupes armés et coalitions</option><option value="Personnalité politique">Personnalités politiques</option><option value="Institution publique">Institutions publiques</option><option value="Organisation internationale">Organisations internationales</option><option value="Société civile">Société civile</option><option value="Autre personne">Autres personnes</option></select><button id="reset">Réinitialiser</button></div>
 <div class="layout"><section class="panel"><h2>Réseau des relations enregistrées</h2><div id="actor-legend" class="actor-legend" aria-label="Légende des catégories"></div><p class="actor-note">Les couleurs désignent uniquement des catégories descriptives, jamais une culpabilité. Le filtre conserve les voisins liés pour contextualiser les relations.</p><svg id="net" viewBox="0 0 1000 630" role="img" aria-label="Graphe des acteurs et de leurs relations documentées"></svg><p class="muted">Bleu : relation décrite dans une source officielle · Orange pointillé : allégation. Cliquez sur un nœud ou sur une ligne pour afficher sa fiche et sa source.</p></section><aside class="panel"><h2>Fiche documentaire</h2><div id="detail">Sélectionnez un acteur ou une relation pour consulter les informations et les références.</div><h3>Couverture</h3><p id="count"></p><p class="muted">La position des nœuds est purement graphique ; elle ne représente ni une localisation ni une hiérarchie.</p></aside></div>
@@ -31,6 +34,21 @@
 <div><h3>Territoires présents dans la base</h3><p class="geo-note">Cliquez sur un nom pour rechercher son emplacement. Les localisations larges ou ambiguës sont indiquées comme approximatives.</p><div id="geo-places" class="geo-places"></div><p id="geo-status" class="muted" role="status" aria-live="polite">Choisissez un territoire.</p><div id="geo-results" class="geo-results"></div><button id="geo-home" type="button">Recentrer sur Haïti</button></div></div>
 </section>
 
+
+<section class="panel" id="advanced-search" aria-labelledby="adv-heading">
+<h2 id="adv-heading">Recherche avancée documentaire</h2>
+<p class="muted">Croisez les acteurs, les périodes, les territoires, les catégories et les statuts. Cette recherche consulte les données déjà enregistrées sans modifier les filtres du réseau, la chronologie ou la carte.</p>
+<div class="adv-fields">
+<label>Acteur ou mot-clé<input id="adv-query" type="search" placeholder="Nom, groupe ou relation"></label>
+<label>Année de la relation<select id="adv-year"><option value="">Toutes les années</option></select></label>
+<label>Territoire mentionné<select id="adv-territory"><option value="">Tous les territoires</option></select></label>
+<label>Catégorie d'acteur<select id="adv-category"><option value="">Toutes les catégories</option></select></label>
+<label>Statut documentaire<select id="adv-status"><option value="">Tous les statuts</option></select></label>
+</div>
+<div class="adv-actions"><button type="button" id="adv-reset">Effacer la recherche avancée</button><span id="adv-count" class="muted" aria-live="polite"></span></div>
+<p class="adv-note">Les années proviennent exclusivement du champ « Période » des relations. Les fiches sans relation peuvent apparaître lorsque le filtre d'année est vide. Un territoire mentionné dans une fiche ne prouve pas qu'un événement s'y soit produit.</p>
+<div id="adv-results"></div>
+</section>
 <section class="panel" id="source-library" aria-labelledby="lib-heading">
 <h2 id="lib-heading">Bibliothèque de sources et références</h2>
 <p>Documents institutionnels, décisions de sanctions et portails de référence déjà cités dans cet atlas. Les dates de publication sont indiquées uniquement lorsqu'elles sont connues ; les pages de référence évolutives et les portails ne sont pas présentés comme des rapports datés.</p>
@@ -236,4 +254,64 @@ $('q').addEventListener('input',render);$('status').addEventListener('change',re
   document.getElementById('lib-reset').addEventListener('click',()=>{search.value='';type.value='';renderLibrary();});
   renderLibrary();
 })();
-</script></html>
+</script>
+<script>
+/* V5.6 : recherche avancée autonome, aucune modification de render() */
+(function(){
+ 'use strict';
+ const root=document.getElementById('advanced-search');
+ if(!root||!window.DATA&&!document.getElementById('net'))return;
+ const get=id=>document.getElementById(id);
+ const fields={q:get('adv-query'),year:get('adv-year'),territory:get('adv-territory'),category:get('adv-category'),status:get('adv-status')};
+ const norm=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('fr').trim();
+ const yearRange=period=>{
+   const nums=[...String(period||'').matchAll(/(?:19|20)\d{2}/g)].map(m=>Number(m[0]));
+   if(!nums.length)return null;
+   const lo=Math.min(...nums),hi=Math.max(...nums);
+   return lo>=2004&&hi<=2026?{lo,hi}:null;
+ };
+ const appendOption=(select,value,label)=>{const o=document.createElement('option');o.value=value;o.textContent=label;select.appendChild(o);};
+ for(let y=2004;y<=2026;y++)appendOption(fields.year,String(y),String(y));
+ [...new Set(DATA.actors.map(a=>a.Territoire).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fr')).forEach(v=>appendOption(fields.territory,v,v));
+ [...new Set(DATA.actors.map(a=>actorCategory(a)))].sort((a,b)=>a.localeCompare(b,'fr')).forEach(v=>appendOption(fields.category,v,v));
+ [...new Set(DATA.links.map(l=>l.Statut).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fr')).forEach(v=>appendOption(fields.status,v,v));
+ const resultBox=get('adv-results');
+ const label=id=>byId[id]?.Nom||id;
+ const text=(parent,tag,value,cls)=>{const e=document.createElement(tag);if(cls)e.className=cls;e.textContent=value;parent.appendChild(e);return e;};
+ const makeButton=(parent,title,fn)=>{const b=text(parent,'button',title);b.type='button';b.addEventListener('click',fn);return b;};
+ function draw(){
+   const q=norm(fields.q.value),year=fields.year.value,territory=fields.territory.value,category=fields.category.value,status=fields.status.value;
+   const territoryMatch=a=>!territory||a?.Territoire===territory;
+   const categoryMatch=a=>!category||(a&&actorCategory(a)===category);
+   const actorMatch=a=>territoryMatch(a)&&categoryMatch(a)&&(!q||norm([a.Nom,a.Affiliation,a.Territoire,a['Rôle documenté']].join(' ')).includes(q));
+   const relevantActor=a=>territoryMatch(a)&&categoryMatch(a);
+   const relations=DATA.links.filter(l=>{
+     if(status&&l.Statut!==status)return false;
+     const yr=yearRange(l['Période']);if(year&&(!yr||Number(year)<yr.lo||Number(year)>yr.hi))return false;
+     const a=byId[l['Source ID']],b=byId[l['Cible ID ou nom']];
+     if((territory||category)&&![a,b].some(relevantActor))return false;
+     if(q&&!norm([label(l['Source ID']),label(l['Cible ID ou nom']),l['Type de lien'],l.Statut,l['Période'],a?.Territoire,b?.Territoire].join(' ')).includes(q))return false;
+     return true;
+   });
+   const actorResults=year||status?[]:DATA.actors.filter(actorMatch);
+   get('adv-count').textContent=relations.length+' relation(s) et '+actorResults.length+' fiche(s) d’acteur correspondantes.';
+   resultBox.replaceChildren();
+   if(!relations.length&&!actorResults.length){text(resultBox,'p','Aucun résultat dans les données actuellement enregistrées.','muted');return;}
+   if(relations.length){text(resultBox,'h3','Relations ('+relations.length+')');relations.forEach(l=>{
+     const article=document.createElement('article');article.className='adv-result';resultBox.appendChild(article);
+     text(article,'h3',label(l['Source ID'])+' → '+label(l['Cible ID ou nom']));
+     text(article,'p',l['Type de lien']+' · '+l.Statut+' · '+(l['Période']||'Période non renseignée'));
+     makeButton(article,'Voir la fiche et la source',()=>{showLink(l);get('detail').scrollIntoView({behavior:'smooth',block:'nearest'});});
+   });}
+   if(actorResults.length){text(resultBox,'h3','Fiches d’acteurs ('+actorResults.length+')');actorResults.forEach(a=>{
+     const article=document.createElement('article');article.className='adv-result';resultBox.appendChild(article);
+     text(article,'h3',a.Nom);text(article,'p',actorCategory(a)+' · '+(a.Territoire||'Territoire non renseigné'));
+     makeButton(article,'Voir la fiche et la source',()=>{showActor(a);get('detail').scrollIntoView({behavior:'smooth',block:'nearest'});});
+   });}
+ }
+ Object.values(fields).forEach(el=>el.addEventListener(el.tagName==='INPUT'?'input':'change',draw));
+ get('adv-reset').addEventListener('click',()=>{Object.values(fields).forEach(el=>el.value='');draw();});
+ draw();
+})();
+</script>
+</html>
