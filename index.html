@@ -16,6 +16,9 @@
 .geo-results button{display:block;width:100%;text-align:left;margin:6px 0;white-space:normal}
 .geo-note{font-size:12px;color:#b6c9dc}
 @media(max-width:850px){.geo-layout{grid-template-columns:1fr}#geo-map{height:360px}}
+
+/* Bibliothèque documentaire V5.5 — styles isolés */
+#source-library{margin-top:16px}#source-library .lib-controls{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}#source-library .lib-controls input{flex:1;min-width:180px}#source-library .lib-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:11px}#source-library .lib-entry{background:#0e1d30;border:1px solid #2d425b;border-radius:9px;padding:13px}#source-library .lib-entry h3{font-size:16px;margin:6px 0}#source-library .lib-entry p{margin:6px 0;font-size:13px}#source-library .lib-meta{font-size:12px;color:#a9b8ca}#source-library .lib-pill{font-size:11px;border-radius:6px;padding:3px 6px;background:#294662}#source-library .lib-empty{color:#a9b8ca}
 </style><h1>Atlas historique de l'insécurité en Haïti · 2004–2026</h1><p>Registre documentaire interactif V5. Les relations sont affichées selon leur statut et accompagnées de leurs sources. Une sanction n'est pas une condamnation judiciaire. Les données ne représentent pas l'ensemble des acteurs de 2004–2026.</p>
 <div class="controls"><input id="q" placeholder="Rechercher un acteur ou un territoire" aria-label="Rechercher"><select id="status"><option value="">Tous les statuts</option><option value="Sanction">Sanctions</option><option value="Allégation">Allégations</option><option value="Rapport">Autres relations documentées</option></select><select id="actorCategory" aria-label="Catégorie d'acteurs"><option value="">Toutes les catégories d'acteurs</option><option value="Groupe armé">Groupes armés et coalitions</option><option value="Personnalité politique">Personnalités politiques</option><option value="Institution publique">Institutions publiques</option><option value="Organisation internationale">Organisations internationales</option><option value="Société civile">Société civile</option><option value="Autre personne">Autres personnes</option></select><button id="reset">Réinitialiser</button></div>
 <div class="layout"><section class="panel"><h2>Réseau des relations enregistrées</h2><div id="actor-legend" class="actor-legend" aria-label="Légende des catégories"></div><p class="actor-note">Les couleurs désignent uniquement des catégories descriptives, jamais une culpabilité. Le filtre conserve les voisins liés pour contextualiser les relations.</p><svg id="net" viewBox="0 0 1000 630" role="img" aria-label="Graphe des acteurs et de leurs relations documentées"></svg><p class="muted">Bleu : relation décrite dans une source officielle · Orange pointillé : allégation. Cliquez sur un nœud ou sur une ligne pour afficher sa fiche et sa source.</p></section><aside class="panel"><h2>Fiche documentaire</h2><div id="detail">Sélectionnez un acteur ou une relation pour consulter les informations et les références.</div><h3>Couverture</h3><p id="count"></p><p class="muted">La position des nœuds est purement graphique ; elle ne représente ni une localisation ni une hiérarchie.</p></aside></div>
@@ -26,6 +29,14 @@
 <p class="muted">Sélectionnez un territoire pour le situer sur une carte OpenStreetMap et consulter les fiches qui le mentionnent. Les points sont des <strong>repères géographiques</strong>, pas des lieux d'incidents ou des preuves de présence d'une personne.</p>
 <div class="geo-layout"><div><div id="geo-map" role="region" aria-label="Carte interactive d'Haïti"><p style="padding:15px">Chargement de la carte…</p></div><p class="geo-note">Fond de carte © contributeurs OpenStreetMap. La recherche géographique nécessite Internet et utilise Nominatim (OpenStreetMap). Aucune géolocalisation personnelle n'est demandée.</p></div>
 <div><h3>Territoires présents dans la base</h3><p class="geo-note">Cliquez sur un nom pour rechercher son emplacement. Les localisations larges ou ambiguës sont indiquées comme approximatives.</p><div id="geo-places" class="geo-places"></div><p id="geo-status" class="muted" role="status" aria-live="polite">Choisissez un territoire.</p><div id="geo-results" class="geo-results"></div><button id="geo-home" type="button">Recentrer sur Haïti</button></div></div>
+</section>
+
+<section class="panel" id="source-library" aria-labelledby="lib-heading">
+<h2 id="lib-heading">Bibliothèque de sources et références</h2>
+<p>Documents institutionnels, décisions de sanctions et portails de référence déjà cités dans cet atlas. Les dates de publication sont indiquées uniquement lorsqu'elles sont connues ; les pages de référence évolutives et les portails ne sont pas présentés comme des rapports datés.</p>
+<div class="lib-controls"><input id="lib-search" type="search" placeholder="Rechercher un document, organisme, référence…" aria-label="Rechercher une source"><select id="lib-type" aria-label="Filtrer les sources"><option value="">Toutes les sources</option><option value="ONU">Nations unies</option><option value="OFAC">OFAC — États-Unis</option><option value="Canada">Canada</option><option value="Droits humains">Droits humains et société civile</option></select><button type="button" id="lib-reset">Effacer la recherche</button></div>
+<p id="lib-count" class="muted" aria-live="polite"></p><div id="lib-list" class="lib-list"></div>
+<p class="muted">Attention : une inscription sur une liste de sanctions ne constitue pas une condamnation judiciaire. Un lien vers un organisme n'atteste pas à lui seul un fait ou une allégation.</p>
 </section>
 <details class="panel"><summary>Consulter les relations sous forme de tableau</summary><div style="overflow:auto"><table><thead><tr><th>Source</th><th>Cible</th><th>Relation</th><th>Statut</th><th>Référence</th></tr></thead><tbody id="rows"></tbody></table></div></details>
 <details class="panel"><summary>Financements et mécanismes documentés</summary><div id="funds"></div></details>
@@ -178,5 +189,51 @@ $('q').addEventListener('input',render);$('status').addEventListener('change',re
   }catch(err){note('Carte indisponible. Les fiches restent consultables.');}};
   script.onerror=()=>note('Impossible de charger le fond de carte. Les fiches restent consultables.');
   document.head.appendChild(script);
+})();
+
+/* Bibliothèque documentaire — indépendante du réseau, de la carte et de la chronologie. */
+(function initSourceLibrary(){
+  const meta={
+    'https://digitallibrary.un.org/record/4064700/files/S_2024_704-FR.pdf':{type:'ONU',title:'Rapport du Groupe d’experts sur Haïti — S/2024/704',date:'2024',precision:'Année du rapport',ref:'S/2024/704'},
+    'https://digitallibrary.un.org/record/4064700':{type:'ONU',title:'Notice du rapport du Groupe d’experts — S/2024/704',date:'2024',precision:'Année du rapport',ref:'S/2024/704'},
+    'https://main.un.org/securitycouncil/en/sanctions/2653/materials/summaries':{type:'ONU',title:'Comité 2653 — résumés des motifs d’inscription',date:'',precision:'Page évolutive',ref:'Comité 2653'},
+    'https://main.un.org/securitycouncil/en/content/johnson-andre':{type:'ONU',title:'Résumé des motifs d’inscription — Johnson André',date:'2023-12-08',precision:'Date d’inscription indiquée dans la base',ref:'HTi.002'},
+    'https://home.treasury.gov/news/press-releases/jy2612':{type:'OFAC',title:'Sanctions américaines — Prophane Victor et Luckson Élan',date:'2024-09-25',precision:'Date de publication vérifiée',ref:'OFAC jy2612'},
+    'https://home.treasury.gov/news/press-releases/sb0282':{type:'OFAC',title:'Décision américaine citée pour Dimitri Hérard et Kempes Sanon',date:'',precision:'Date de publication à vérifier',ref:'OFAC sb0282'},
+    'https://home.treasury.gov/news/press-releases/jy1972':{type:'OFAC',title:'Communiqué OFAC sur des dirigeants de gangs haïtiens',date:'',precision:'Date de publication à vérifier',ref:'OFAC jy1972'},
+    'https://home.treasury.gov/news/press-releases/jy2542':{type:'OFAC',title:'Décision américaine citée pour Michel Joseph Martelly',date:'',precision:'Date de publication à vérifier',ref:'OFAC jy2542'},
+    'https://home.treasury.gov/news/press-releases/jy1137':{type:'OFAC',title:'Décision américaine citée pour Richard Lenine Hervé Fourcand',date:'',precision:'Date de publication à vérifier',ref:'OFAC jy1137'},
+    'https://www.canada.ca/en/global-affairs/news/2024/06/backgrounder-canada-announces-sanctions-against-haitian-gang-leaders.html':{type:'Canada',title:'Canada — sanctions contre des dirigeants de gangs haïtiens',date:'2024-06-21',precision:'Date de publication vérifiée',ref:'Affaires mondiales Canada'},
+    'https://www.canada.ca/fr/affaires-mondiales/nouvelles/2022/11/document-dinformation-sanctions-contre-des-elites-politiques-haitiennes.html':{type:'Canada',title:'Canada — sanctions contre des élites politiques haïtiennes',date:'',precision:'Date de publication à vérifier',ref:'Affaires mondiales Canada'},
+    'https://www.canada.ca/fr/affaires-mondiales/nouvelles/2025/03/document-dinformation--le-canada-impose-des-sanctions-supplementaires-contre-des-personnes-liees-a-la-crise-en-haiti.html':{type:'Canada',title:'Canada — sanctions supplémentaires liées à la crise en Haïti',date:'',precision:'Date de publication à vérifier',ref:'Affaires mondiales Canada'},
+    'https://web.rnddh.org/':{type:'Droits humains',title:'Réseau national de défense des droits humains (RNDDH)',date:'',precision:'Site institutionnel — pas un rapport spécifique',ref:'RNDDH'},
+    'https://binuh.unmissions.org/':{type:'ONU',title:'Bureau intégré des Nations unies en Haïti (BINUH)',date:'',precision:'Site institutionnel — pas un rapport spécifique',ref:'BINUH'},
+    'https://peacekeeping.un.org/en/mission/minustah':{type:'ONU',title:'MINUSTAH — présentation de la mission',date:'',precision:'Page institutionnelle — pas un rapport spécifique',ref:'MINUSTAH'}
+  };
+  const urls=new Set();
+  DATA.actors.forEach(a=>{if(a['URL primaire'])urls.add(a['URL primaire']);});
+  DATA.links.forEach(l=>{if(l['URL source'])urls.add(l['URL source']);});
+  DATA.funds.forEach(f=>{if(f['URL source'])urls.add(f['URL source']);});
+  DATA.violations.forEach(v=>{if(v['URL source'])urls.add(v['URL source']);});
+  const docs=[...urls].filter(u=>/^https:\/\//.test(u)).map(u=>({url:u,...(meta[u]||{type:'Autre',title:'Source citée dans l’atlas',date:'',precision:'Date non renseignée',ref:'Référence à compléter'})}));
+  const search=document.getElementById('lib-search'),type=document.getElementById('lib-type'),list=document.getElementById('lib-list'),count=document.getElementById('lib-count');
+  function renderLibrary(){
+    const q=search.value.trim().toLocaleLowerCase('fr');
+    const filtered=docs.filter(d=>(!type.value||d.type===type.value)&&(!q||[d.title,d.ref,d.type,d.date].join(' ').toLocaleLowerCase('fr').includes(q)));
+    count.textContent=filtered.length+' référence(s) affichée(s) sur '+docs.length+' source(s) distincte(s).';
+    list.replaceChildren();
+    if(!filtered.length){const p=document.createElement('p');p.className='lib-empty';p.textContent='Aucune référence correspondant à cette recherche.';list.appendChild(p);return;}
+    filtered.forEach(d=>{
+      const article=document.createElement('article');article.className='lib-entry';
+      const badge=document.createElement('span');badge.className='lib-pill';badge.textContent=d.type;article.appendChild(badge);
+      const title=document.createElement('h3');title.textContent=d.title;article.appendChild(title);
+      const info=document.createElement('p');info.className='lib-meta';info.textContent=(d.date||'Date non renseignée')+' · '+d.precision+' · '+d.ref;article.appendChild(info);
+      const a=document.createElement('a');a.href=d.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Consulter la source ↗';article.appendChild(a);
+      list.appendChild(article);
+    });
+  }
+  search.addEventListener('input',renderLibrary);type.addEventListener('change',renderLibrary);
+  document.getElementById('lib-reset').addEventListener('click',()=>{search.value='';type.value='';renderLibrary();});
+  renderLibrary();
 })();
 </script></html>
