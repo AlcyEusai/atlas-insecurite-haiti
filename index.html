@@ -25,6 +25,38 @@
 
 /* Registre historique V5.7 : module autonome */
 #event-registry{margin-top:16px}#event-registry .ev-controls{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}#event-registry .ev-controls input{flex:1;min-width:170px}#event-registry .ev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:11px}#event-registry .ev-card{background:#0e1d30;border:1px solid #344e69;border-radius:9px;padding:14px}#event-registry .ev-card h3{font-size:16px;margin:7px 0}#event-registry .ev-card p{font-size:13px;margin:7px 0}#event-registry .ev-meta{font-size:12px;color:#bdd0e4}#event-registry .ev-card a{overflow-wrap:anywhere}#event-registry .ev-note{font-size:13px;color:#b8cbe0}
+
+/* V5.8 — Habillage visuel : aucune modification des données ou scripts */
+:root{color-scheme:dark;--accent:#79caff;--border:#34506b}
+html{scroll-behavior:smooth;scroll-padding-top:95px}
+body{padding:clamp(14px,2.8vw,36px);line-height:1.6;background:radial-gradient(ellipse at 50% -10%,#1a3b59 0%,#0b1422 45%);}
+h1{font-size:clamp(27px,3.4vw,43px);line-height:1.15;letter-spacing:-.035em;max-width:900px}
+h2{font-size:clamp(19px,2vw,25px);letter-spacing:-.02em;margin-top:0}
+h3{line-height:1.3}.panel{border-radius:18px;padding:clamp(17px,2.3vw,27px);box-shadow:0 12px 36px #00000024;background:linear-gradient(155deg,#142840,#102036);border-color:#304963}
+.panel:target{outline:2px solid #79caff;outline-offset:3px}
+.controls{padding:15px;border:1px solid #34506b;background:#13263d;border-radius:15px;align-items:center}
+.controls input{flex:1;min-width:220px}select,input,button{font:inherit;min-height:43px;transition:border-color .2s,background .2s,transform .2s;max-width:100%}
+button:hover{background:#2b5275;border-color:#9ad7ff}button:active{transform:translateY(1px)}a:hover{text-decoration:underline}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #8edaff;outline-offset:2px}
+#net{background:radial-gradient(circle at center,#183854,#0b1a2b 75%);border:1px solid #294965;border-radius:13px}
+#detail{line-height:1.65;overflow-wrap:anywhere}#detail h3{color:#d9efff}
+.actor-legend{gap:12px}.actor-legend span{background:#203951;border-radius:999px;padding:5px 9px}
+.timeline-entry,.ev-card,#source-library .lib-entry,#advanced-search .adv-result{border-radius:13px;transition:border-color .2s,transform .2s,box-shadow .2s}
+.timeline-entry:hover,.ev-card:hover,#source-library .lib-entry:hover,#advanced-search .adv-result:hover{border-color:#6ca6d5;box-shadow:0 8px 20px #0003}
+summary{padding:8px 0;font-weight:650}td,th{padding:12px 10px}th{color:#d4e9fc}tr:hover td{background:#ffffff08}
+.atlas-hero{margin:20px 0 15px;padding:clamp(22px,4vw,48px);border:1px solid #416788;border-radius:22px;background:linear-gradient(115deg,#163d5e 0%,#132941 60%,#0d2036 100%);position:relative;overflow:hidden}
+.atlas-hero:after{content:'';position:absolute;width:270px;height:270px;right:-100px;top:-120px;border:1px solid #7fcfff40;border-radius:50%;pointer-events:none}
+.atlas-eyebrow{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:#8ad4ff;font-weight:800;margin-bottom:10px}
+.atlas-hero p{max-width:820px;font-size:clamp(14px,1.5vw,17px);color:#d2e1ef}
+.atlas-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:22px}
+.atlas-metric{background:#091b2c99;border:1px solid #47708d;border-radius:13px;padding:14px}
+.atlas-metric strong{display:block;color:#fff;font-size:clamp(21px,2.6vw,30px);line-height:1.2}
+.atlas-metric span{font-size:12px;color:#b9d2e8}
+.atlas-nav{position:sticky;top:0;z-index:100;display:flex;gap:7px;overflow-x:auto;padding:10px 5px;margin:0 0 16px;background:#0b1422f2;backdrop-filter:blur(12px);border-bottom:1px solid #34506b;scrollbar-width:thin}
+.atlas-nav a{white-space:nowrap;text-decoration:none;background:#1b3550;border:1px solid #375777;color:#dcecf8;border-radius:999px;padding:9px 15px;font-size:13px;font-weight:650}
+.atlas-nav a:hover,.atlas-nav a:focus-visible{background:#2b5d86;border-color:#91d6ff}
+.atlas-intro{font-size:13px;color:#b6cbe0;margin:0 0 16px}
+@media(max-width:750px){.atlas-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.atlas-hero{margin-top:10px}.atlas-nav{margin-left:-14px;margin-right:-14px;padding-left:14px}.layout{gap:12px}#net{height:430px}.panel{padding:16px}.controls input,.controls select,.controls button{width:100%;box-sizing:border-box}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
 </style>
 <a href="https://savoirplufr.wpcomstaging.com/"
    target="_blank"
@@ -39,9 +71,21 @@
           font-weight:600;">
   🌐 Découvrir ou aller le site d'Eusaï Alcy ↗
 </a>
-<h1>Atlas historique de l'insécurité en Haïti · 2004–2026</h1><p>Registre documentaire interactif V5. Les relations sont affichées selon leur statut et accompagnées de leurs sources. Une sanction n'est pas une condamnation judiciaire. Les données ne représentent pas l'ensemble des acteurs de 2004–2026.</p>
+<header class="atlas-hero" id="accueil-atlas">
+<div class="atlas-eyebrow">Plateforme de recherche · Haïti · 2004–2026</div>
+<h1>Haïti : les réseaux de l'insécurité</h1>
+<p>Un atlas interactif pour explorer les acteurs, les relations enregistrées, les territoires et les événements historiques à partir de références documentaires.</p>
+<div class="atlas-metrics" aria-label="Indicateurs de la base">
+<div class="atlas-metric"><strong id="metric-actors">—</strong><span>Fiches d'acteurs</span></div>
+<div class="atlas-metric"><strong id="metric-links">—</strong><span>Relations enregistrées</span></div>
+<div class="atlas-metric"><strong id="metric-events">—</strong><span>Événements répertoriés</span></div>
+<div class="atlas-metric"><strong>2004–2026</strong><span>Période étudiée</span></div>
+</div></header>
+<nav class="atlas-nav" aria-label="Navigation rapide dans l'atlas"><a href="#reseau-atlas">Réseau</a><a href="#chronologie">Chronologie</a><a href="#geographie">Carte</a><a href="#advanced-search">Recherche avancée</a><a href="#source-library">Sources</a><a href="#event-registry">Événements</a><a href="#atlas-methodology">Méthodologie</a></nav>
+<p class="atlas-intro">Les couleurs distinguent des catégories descriptives, non des responsabilités pénales. Consultez toujours les fiches et les sources.</p>
+<h2>Atlas historique de l'insécurité en Haïti · 2004–2026</h2><p>Registre documentaire interactif V5. Les relations sont affichées selon leur statut et accompagnées de leurs sources. Une sanction n'est pas une condamnation judiciaire. Les données ne représentent pas l'ensemble des acteurs de 2004–2026.</p>
 <div class="controls"><input id="q" placeholder="Rechercher un acteur ou un territoire" aria-label="Rechercher"><select id="status"><option value="">Tous les statuts</option><option value="Sanction">Sanctions</option><option value="Allégation">Allégations</option><option value="Rapport">Autres relations documentées</option></select><select id="actorCategory" aria-label="Catégorie d'acteurs"><option value="">Toutes les catégories d'acteurs</option><option value="Groupe armé">Groupes armés et coalitions</option><option value="Personnalité politique">Personnalités politiques</option><option value="Institution publique">Institutions publiques</option><option value="Organisation internationale">Organisations internationales</option><option value="Société civile">Société civile</option><option value="Autre personne">Autres personnes</option></select><button id="reset">Réinitialiser</button></div>
-<div class="layout"><section class="panel"><h2>Réseau des relations enregistrées</h2><div id="actor-legend" class="actor-legend" aria-label="Légende des catégories"></div><p class="actor-note">Les couleurs désignent uniquement des catégories descriptives, jamais une culpabilité. Le filtre conserve les voisins liés pour contextualiser les relations.</p><svg id="net" viewBox="0 0 1000 630" role="img" aria-label="Graphe des acteurs et de leurs relations documentées"></svg><p class="muted">Bleu : relation décrite dans une source officielle · Orange pointillé : allégation. Cliquez sur un nœud ou sur une ligne pour afficher sa fiche et sa source.</p></section><aside class="panel"><h2>Fiche documentaire</h2><div id="detail">Sélectionnez un acteur ou une relation pour consulter les informations et les références.</div><h3>Couverture</h3><p id="count"></p><p class="muted">La position des nœuds est purement graphique ; elle ne représente ni une localisation ni une hiérarchie.</p></aside></div>
+<div class="layout" id="reseau-atlas"><section class="panel"><h2>Réseau des relations enregistrées</h2><div id="actor-legend" class="actor-legend" aria-label="Légende des catégories"></div><p class="actor-note">Les couleurs désignent uniquement des catégories descriptives, jamais une culpabilité. Le filtre conserve les voisins liés pour contextualiser les relations.</p><svg id="net" viewBox="0 0 1000 630" role="img" aria-label="Graphe des acteurs et de leurs relations documentées"></svg><p class="muted">Bleu : relation décrite dans une source officielle · Orange pointillé : allégation. Cliquez sur un nœud ou sur une ligne pour afficher sa fiche et sa source.</p></section><aside class="panel"><h2>Fiche documentaire</h2><div id="detail">Sélectionnez un acteur ou une relation pour consulter les informations et les références.</div><h3>Couverture</h3><p id="count"></p><p class="muted">La position des nœuds est purement graphique ; elle ne représente ni une localisation ni une hiérarchie.</p></aside></div>
 <section class="panel" id="chronologie" aria-labelledby="timeline-heading" style="margin:16px 0"><h2 id="timeline-heading">Chronologie documentaire · 2004–2026</h2><p class="muted">Sélectionnez une année pour afficher les relations dont la période enregistrée couvre cette année. Il s’agit de périodes déclarées dans la base, et non nécessairement des dates d’événements ou de publication.</p><div class="timeline-controls"><button type="button" id="timeline-prev" aria-label="Année précédente">−</button><label for="timeline-range">Année : <span class="timeline-year" id="timeline-year">2024</span></label><input id="timeline-range" type="range" min="2004" max="2026" step="1" value="2024" aria-label="Choisir une année entre 2004 et 2026"><button type="button" id="timeline-next" aria-label="Année suivante">+</button><button type="button" id="timeline-all">Voir toutes les périodes</button></div><p id="timeline-count" class="muted" aria-live="polite"></p><div id="timeline-list" class="timeline-list"></div><p class="muted timeline-note">Cliquez sur une relation pour ouvrir sa fiche dans le panneau « Fiche documentaire » au-dessus. Une sanction ou une allégation ne constitue pas une condamnation judiciaire.</p></section>
 
 <section class="panel" id="geographie" aria-labelledby="geo-heading" style="margin:16px 0">
@@ -394,4 +438,14 @@ q.addEventListener('input',draw);year.addEventListener('change',draw);type.addEv
 <details><summary>Principes documentaires de référence</summary><p><a href="https://digitallibrary.un.org/record/3973652/files/OHCHR_BerkeleyProtocol.pdf" target="_blank" rel="noopener noreferrer">Protocole de Berkeley (HCDH / Human Rights Center)</a> : collecte, préservation et vérification des informations ouvertes. <a href="https://main.un.org/securitycouncil/fr/sanctions/2653" target="_blank" rel="noopener noreferrer">Comité des sanctions de l'ONU concernant Haïti</a> : cadre et critères des mesures de sanction.</p></details>
 <p class="muted">Note éditoriale : les informations présentées doivent toujours être lues avec leurs références originales. La visualisation n'établit ni culpabilité ni causalité.</p>
 </section>
+<script>/* Indicateurs de présentation uniquement ; aucune mutation de DATA. */
+(function(){
+ const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=String(value)};
+ if(typeof DATA!=='undefined'){
+   set('metric-actors',Array.isArray(DATA.actors)?DATA.actors.length:'—');
+   set('metric-links',Array.isArray(DATA.links)?DATA.links.length:'—');
+ }
+ const ev=typeof HISTORICAL_EVENTS!=='undefined'?HISTORICAL_EVENTS:(typeof EVENTS!=='undefined'?EVENTS:null);
+ set('metric-events',Array.isArray(ev)?ev.length:'—');
+})();</script>
 </html>
