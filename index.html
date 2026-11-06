@@ -57,6 +57,53 @@ summary{padding:8px 0;font-weight:650}td,th{padding:12px 10px}th{color:#d4e9fc}t
 .atlas-intro{font-size:13px;color:#b6cbe0;margin:0 0 16px}
 @media(max-width:750px){.atlas-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.atlas-hero{margin-top:10px}.atlas-nav{margin-left:-14px;margin-right:-14px;padding-left:14px}.layout{gap:12px}#net{height:430px}.panel{padding:16px}.controls input,.controls select,.controls button{width:100%;box-sizing:border-box}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+
+/* V5.9 — Thème clair à contraste renforcé, sans changement des scripts ni données */
+:root{color-scheme:light;color:#1d2939;background:#f3f6fa;--accent:#135b9b;--border:#d6e0ea}
+body{color:#1d2939;background:#f3f6fa}
+p,.muted,.actor-note,.geo-note,.timeline-note,.adv-note,.ev-note{color:#4b5e73}
+a{color:#075a9f}
+h1,h2,h3{color:#152b43}
+.panel{background:#fff;border:1px solid #d7e0eb;box-shadow:0 6px 22px #243c5910}
+.controls{background:#fff;border-color:#d7e0eb}
+select,input,button{background:#fff;color:#1b2e43;border:1px solid #a9bacb}
+input::placeholder{color:#66778a}
+button{background:#eaf2fa;color:#154b7a;font-weight:600}
+button:hover{background:#d5e9fb;border-color:#1769a9}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline-color:#1469aa}
+#detail h3{color:#164d7d}
+#net{background:radial-gradient(circle at center,#1c3d5a,#102439 78%);border-color:#9ab1c6}
+.actor-legend span{background:#eef3f8;color:#26384b}
+.actor-dot{border-color:#52667b}
+.timeline-entry,#source-library .lib-entry,#advanced-search .adv-result,#event-registry .ev-card{background:#f8fafc;border:1px solid #d7e0eb;color:#20354b}
+.timeline-entry small,#source-library .lib-meta,#source-library .lib-empty,#advanced-search .adv-note,#event-registry .ev-meta,#event-registry .ev-note{color:#52667c}
+.timeline-empty{color:#52667c}
+#advanced-search label{color:#334b61}
+#source-library .lib-pill{background:#e3eef9;color:#20547e}
+#geo-map{background:#e8eff5}
+.geo-places button[aria-pressed="true"]{background:#d8ebfa;border-color:#2472aa;color:#153f65}
+.geo-note{color:#52667c}
+#source-library .lib-entry p,#advanced-search .adv-result p,#event-registry .ev-card p{color:#4b5e73}
+#source-library .lib-entry h3,#advanced-search .adv-result h3,#event-registry .ev-card h3{color:#1a354e}
+.timeline-entry:hover,#event-registry .ev-card:hover,#source-library .lib-entry:hover,#advanced-search .adv-result:hover{box-shadow:0 7px 18px #233f6017}
+.actor-legend span,.tag{color:#243c52}
+.tag{background:#e7f0f8}
+.atlas-hero{background:linear-gradient(115deg,#153e63,#0c2d4b);border-color:#2c587c;color:#fff}
+.atlas-hero h1{color:#fff}
+.atlas-hero p{color:#e0ebf5}
+.atlas-eyebrow{color:#a4dbff}
+.atlas-metric{background:#ffffff16;border-color:#7196b2}
+.atlas-metric strong{color:#fff}
+.atlas-metric span{color:#e1eaf3}
+.atlas-nav{background:#fffffff2;border-bottom-color:#d5e0eb;box-shadow:0 4px 12px #16324e10}
+.atlas-nav a{background:#eef4fa;color:#194e79;border-color:#c6d8e8}
+.atlas-nav a:hover,.atlas-nav a:focus-visible{background:#d9eafa;border-color:#2778b4;color:#123e61}
+.atlas-intro{color:#4c6075}
+th{color:#213b52;background:#f0f5fa}
+td,th{border-bottom-color:#e0e7ef}
+tr:hover td{background:#f3f8fc}
+.panel:target{outline-color:#1673b4}
+
 </style>
 <a href="https://savoirplufr.wpcomstaging.com/"
    target="_blank"
@@ -69,7 +116,7 @@ summary{padding:8px 0;font-weight:650}td,th{padding:12px 10px}th{color:#d4e9fc}t
           text-decoration:none;
           border-radius:8px;
           font-weight:600;">
-  🌐 Découvrir ou aller le site d'Eusaï Alcy ↗
+  🌐 Découvrir le site d'Eusaï Alcy ↗
 </a>
 <header class="atlas-hero" id="accueil-atlas">
 <div class="atlas-eyebrow">Plateforme de recherche · Haïti · 2004–2026</div>
