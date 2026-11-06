@@ -110,6 +110,13 @@ tr:hover td{background:#f3f8fc}
 .geo-gang-card strong{font-size:14px}.geo-gang-card p{font-size:12px;color:#38536c;margin:5px 0}.geo-gang-card a{font-size:12px;font-weight:700;color:#075c9d}
 .leaflet-popup-content .geo-gang-card{max-width:310px}.leaflet-popup-content h4{margin:10px 0 5px}
 .geo-results{max-height:390px}
+
+/* Repères territoriaux colorés : symboles graphiques, jamais des périmètres de contrôle. */
+.geo-color-legend{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0;color:#28435c;font-size:13px}
+.geo-color-legend span{display:inline-flex;align-items:center;gap:6px}
+.geo-color-legend i{width:13px;height:13px;display:inline-block;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #8295a7}
+.geo-map-warning{padding:10px 13px;background:#fff7e6;border-left:4px solid #c38b2e;color:#624b22;border-radius:5px;font-size:13px;margin:10px 0}
+.geo-gang-card{border-left:4px solid #2c719d}
 </style>
 <a href="https://savoirplufr.wpcomstaging.com/"
    target="_blank"
@@ -144,7 +151,7 @@ tr:hover td{background:#f3f8fc}
 <section class="panel" id="geographie" aria-labelledby="geo-heading" style="margin:16px 0">
 <h2 id="geo-heading">Carte des territoires mentionnés dans les fiches</h2>
 <p class="muted">Sélectionnez un territoire pour le situer sur une carte OpenStreetMap et consulter les fiches qui le mentionnent. Les points sont des <strong>repères géographiques</strong>, pas des lieux d'incidents ou des preuves de présence d'une personne.</p>
-<div class="geo-layout"><div><div id="geo-map" role="region" aria-label="Carte interactive d'Haïti"><p style="padding:15px">Chargement de la carte…</p></div><p class="geo-note">Fond de carte © contributeurs OpenStreetMap. La recherche géographique nécessite Internet et utilise Nominatim (OpenStreetMap). Aucune géolocalisation personnelle n'est demandée.</p></div>
+<div class="geo-color-legend" aria-label="Légende des repères colorés"><span><i style="background:#c24b62"></i>Artibonite</span><span><i style="background:#8658bb"></i>Centre</span><span><i style="background:#2788ae"></i>Ouest</span><span><i style="background:#7c8c9d"></i>Autres localités</span></div><p class="geo-map-warning">Les cercles colorés sont des repères visuels de territoire, pas des frontières de gangs ni des positions en temps réel. Aucun polygone de contrôle n'est dessiné sans limites géographiques sourcées.</p><div class="geo-layout"><div><div id="geo-map" role="region" aria-label="Carte interactive d'Haïti"><p style="padding:15px">Chargement de la carte…</p></div><p class="geo-note">Fond de carte © contributeurs OpenStreetMap. La recherche géographique nécessite Internet et utilise Nominatim (OpenStreetMap). Aucune géolocalisation personnelle n'est demandée.</p></div>
 <div><h3>Territoires présents dans la base</h3><p class="geo-note">Cliquez sur un nom pour rechercher son emplacement. Les localisations larges ou ambiguës sont indiquées comme approximatives.</p><div id="geo-places" class="geo-places"></div><p id="geo-status" class="muted" role="status" aria-live="polite">Choisissez un territoire.</p><div id="geo-results" class="geo-results"></div><button id="geo-home" type="button">Recentrer sur Haïti</button></div></div>
 </section>
 
@@ -273,11 +280,28 @@ $('q').addEventListener('input',render);$('status').addEventListener('change',re
     {label:'Artibonite',query:'Artibonite, Haiti',broad:true},
     {label:'Belladère',query:'Belladère, Haiti'},
     {label:'Canaan',query:'Canaan, Haiti'},
-    {label:'Ouest',query:'Ouest, Haiti',broad:true}
+    {label:'Ouest',query:'Ouest, Haiti',broad:true},
+    {label:'Centre',query:'Centre Department, Haiti',broad:true}
   ];
-  const territories=candidates.map(t=>({...t,actors:actors.filter(a=>String(a.Territoire||'').toLocaleLowerCase('fr').includes(t.label.toLocaleLowerCase('fr')))})).filter(t=>t.actors.length);
+  // Inventaire complémentaire fourni par le contributeur (novembre 2026).
+  // Les localisations n'ont pas été vérifiées individuellement dans les rapports cités.
+  // Ne jamais assimiler ces mentions à une géolocalisation ou à un contrôle territorial actuel.
+  const inventory2026 = [{"nom": "400 Mawozo", "departements": ["Ouest", "Centre"], "zones": "Croix-des-Bouquets, Thomazeau, Lilavois, RN8 ; Mirebalais, Saut-d’Eau"}, {"nom": "Canaan / Taliban", "departements": ["Ouest", "Centre"], "zones": "Canaan, Onaville, Jérusalem, Corail, Bon Repos ; Mirebalais, Saut-d’Eau"}, {"nom": "Kraze Baryè", "departements": ["Ouest"], "zones": "Torcel, Pernier, Haut-Tabarre"}, {"nom": "5 Segond / Baz 5 Segonn", "departements": ["Ouest"], "zones": "Village-de-Dieu, Bicentenaire, Martissant ; Kenscoff"}, {"nom": "Grand Ravine", "departements": ["Ouest"], "zones": "Grand-Ravine, Martissant, Mariani, Gressier, Carrefour-Feuilles"}, {"nom": "Les Argentins", "departements": ["Ouest"], "zones": "Bel-Air, Fort National, Solino"}, {"nom": "Delmas 6", "departements": ["Ouest"], "zones": "Delmas 6 et environs"}, {"nom": "Krache Dife", "departements": ["Ouest"], "zones": "Secteurs de Port-au-Prince (non précisés)"}, {"nom": "Tokyo", "departements": ["Ouest"], "zones": "Tokyo, Delmas 2"}, {"nom": "Terre Noire", "departements": ["Ouest"], "zones": "Terre Noire, Cité Soleil, Carrefour Drouillard"}, {"nom": "Wharf Jérémie", "departements": ["Ouest"], "zones": "Wharf Jérémie, La Saline, Fort Dimanche"}, {"nom": "Fort Dimanche", "departements": ["Ouest"], "zones": "Fort Dimanche"}, {"nom": "Gran Grif / Savien", "departements": ["Artibonite"], "zones": "Savien, Petite-Rivière-de-l’Artibonite, Liancourt, Pont-Sondé"}, {"nom": "Kokorat San Ras", "departements": ["Artibonite"], "zones": "Artibonite ; Marchand-Dessalines"}];
+  function territoryInventory(t){
+    const key=t.label.toLocaleLowerCase('fr');
+    return inventory2026.filter(g=>g.departements.some(d=>d.toLocaleLowerCase('fr')===key)
+      || g.zones.toLocaleLowerCase('fr').includes(key));
+  }
+  function supplementalCard(g){
+    const card=document.createElement('div');card.className='geo-gang-card';
+    const title=document.createElement('strong');title.textContent=g.nom;card.appendChild(title);
+    const p=document.createElement('p');p.textContent='Localités mentionnées : '+g.zones;card.appendChild(p);
+    const meta=document.createElement('small');meta.textContent='Inventaire transmis en novembre 2026 · Correspondance source/localité à vérifier';card.appendChild(meta);
+    return card;
+  }
+  const territories=candidates.map(t=>({...t,actors:actors.filter(a=>String(a.Territoire||'').toLocaleLowerCase('fr').includes(t.label.toLocaleLowerCase('fr')))})).filter(t=>t.actors.length || territoryInventory(t).length);
   const placeBox=$('geo-places'),resultBox=$('geo-results'),statusBox=$('geo-status');
-  const cache=new Map();let map=null,marker=null,selected=null,requestId=0,lastRequest=0;
+  const cache=new Map();let map=null,marker=null,highlight=null,selected=null,requestId=0,lastRequest=0;
   const note=message=>{statusBox.textContent=message;};
   // Un groupe est affiché uniquement si sa propre fiche associe explicitement son territoire.
   // Aucun point ne représente une position opérationnelle ou une zone de contrôle.
@@ -300,7 +324,13 @@ $('q').addEventListener('input',render);$('status').addEventListener('change',re
     const groups=documentedGroups(t);
     const title=document.createElement('h4');title.textContent=`Groupes armés documentés : ${groups.length}`;resultBox.appendChild(title);
     if(groups.length){groups.forEach(a=>resultBox.appendChild(shortGroupCard(a)));}
-    else {const empty=document.createElement('p');empty.textContent='Aucun groupe armé explicitement associé à ce territoire dans les fiches actuelles. Cela ne signifie pas une absence de groupes sur le terrain.';resultBox.appendChild(empty);}
+    else {const empty=document.createElement('p');empty.textContent='Aucun groupe armé dans les fiches officielles actuelles pour cette sélection.';resultBox.appendChild(empty);}
+    const supplemental=territoryInventory(t);
+    if(supplemental.length){
+      const h=document.createElement('h4');h.textContent='Inventaire complémentaire transmis ('+supplemental.length+')';resultBox.appendChild(h);
+      supplemental.forEach(g=>resultBox.appendChild(supplementalCard(g)));
+      const note=document.createElement('p');note.className='geo-note';note.textContent='Ces mentions ne sont pas des positions exactes ni des zones de contrôle confirmées. Vérification documentaire individuelle en attente.';resultBox.appendChild(note);
+    }
     const heading=document.createElement('p');heading.textContent=`Autres fiches mentionnant « ${t.label} » (${t.actors.length} au total) :`;resultBox.appendChild(heading);
     t.actors.forEach(a=>{const b=document.createElement('button');b.type='button';b.textContent=a.Nom+' · '+actorCategory(a);b.addEventListener('click',()=>{showActor(a);$('detail').scrollIntoView({behavior:'smooth',block:'nearest'});});resultBox.appendChild(b);});
   }
@@ -329,19 +359,29 @@ $('q').addEventListener('input',render);$('status').addEventListener('change',re
   function placeMarker(t,loc){
     if(!map)return;
     if(marker)map.removeLayer(marker);
+    if(highlight)map.removeLayer(highlight);
+    const territoryColors={Artibonite:'#c24b62',Centre:'#8658bb',Ouest:'#2788ae'};
+    const color=territoryColors[t.label] || (t.label.includes('Artibonite')?'#c24b62':'#7c8c9d');
+    // Rayon en pixels, pas en kilomètres : ne délimite aucune zone de présence.
+    highlight=L.circleMarker([loc.lat,loc.lon],{radius:t.broad?20:13,color:'#ffffff',weight:3,fillColor:color,fillOpacity:.55,opacity:.95}).addTo(map);
     marker=L.marker([loc.lat,loc.lon]).addTo(map);
-    const popup=document.createElement('div');const b=document.createElement('strong');b.textContent=t.label;popup.appendChild(b);
+    const popup=document.createElement('div');const notice=document.createElement('p');notice.textContent='Cercle de couleur symbolique : il ne délimite ni une zone de contrôle ni une position exacte.';popup.appendChild(notice);const b=document.createElement('strong');b.textContent=t.label;popup.appendChild(b);
     const p=document.createElement('p');p.textContent='Repère géographique issu d’OpenStreetMap'+(t.broad?' (zone étendue)':'')+'. Ce point ne localise aucun incident.';popup.appendChild(p);
     const groups=documentedGroups(t);
     const gh=document.createElement('h4');gh.textContent='Groupes documentés dans la base : '+groups.length;popup.appendChild(gh);
     if(groups.length){groups.forEach(a=>popup.appendChild(shortGroupCard(a)));}
-    else {const empty=document.createElement('p');empty.textContent='Aucun groupe armé identifié par les fiches de ce territoire.';popup.appendChild(empty);}
+    else {const empty=document.createElement('p');empty.textContent='Aucun groupe armé dans les fiches officielles actuelles pour ce territoire.';popup.appendChild(empty);}
+    const supplemental=territoryInventory(t);
+    if(supplemental.length){
+      const h=document.createElement('h4');h.textContent='Inventaire complémentaire communiqué : '+supplemental.length;popup.appendChild(h);
+      supplemental.forEach(g=>popup.appendChild(supplementalCard(g)));
+    }
     marker.bindPopup(popup,{maxWidth:360,minWidth:240,maxHeight:300}).openPopup();map.setView([loc.lat,loc.lon],t.broad?9:12);
     note('Repère trouvé : '+loc.name+'. Position indicative, sans lien avec un incident précis.');
   }
-  territories.forEach(t=>{const b=document.createElement('button');b.type='button';b.dataset.place=t.label;b.setAttribute('aria-pressed','false');b.textContent=t.label+' ('+t.actors.length+')';b.addEventListener('click',()=>locate(t));placeBox.appendChild(b);});
+  territories.forEach(t=>{const b=document.createElement('button');b.type='button';b.dataset.place=t.label;b.setAttribute('aria-pressed','false');b.textContent=t.label+' ('+(t.actors.length+territoryInventory(t).length)+' mentions)';b.addEventListener('click',()=>locate(t));placeBox.appendChild(b);});
   if(!territories.length)note('Aucun territoire exploitable dans les fiches actuelles.');
-  $('geo-home').addEventListener('click',()=>{if(map){map.setView([19.0,-72.65],8);if(marker){map.removeLayer(marker);marker=null;}}note('Vue nationale. Sélectionnez un territoire pour consulter ses fiches.');});
+  $('geo-home').addEventListener('click',()=>{if(map){map.setView([19.0,-72.65],8);if(marker){map.removeLayer(marker);marker=null;}if(highlight){map.removeLayer(highlight);highlight=null;}}note('Vue nationale. Sélectionnez un territoire pour consulter ses fiches.');});
   // Leaflet est chargé à part : une erreur de carte n'interrompt jamais l'atlas.
   const leafletCSS=document.createElement('link');leafletCSS.rel='stylesheet';leafletCSS.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';document.head.appendChild(leafletCSS);
   const script=document.createElement('script');script.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
