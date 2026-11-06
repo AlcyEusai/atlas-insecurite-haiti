@@ -104,6 +104,12 @@ td,th{border-bottom-color:#e0e7ef}
 tr:hover td{background:#f3f8fc}
 .panel:target{outline-color:#1673b4}
 
+
+/* Fiches courtes dans la carte et dans le panneau latéral */
+.geo-gang-card{background:#f1f6fc;color:#17314b;border:1px solid #c4d7e8;border-left:4px solid #c57d39;border-radius:8px;padding:10px;margin:8px 0;line-height:1.45}
+.geo-gang-card strong{font-size:14px}.geo-gang-card p{font-size:12px;color:#38536c;margin:5px 0}.geo-gang-card a{font-size:12px;font-weight:700;color:#075c9d}
+.leaflet-popup-content .geo-gang-card{max-width:310px}.leaflet-popup-content h4{margin:10px 0 5px}
+.geo-results{max-height:390px}
 </style>
 <a href="https://savoirplufr.wpcomstaging.com/"
    target="_blank"
@@ -273,9 +279,29 @@ $('q').addEventListener('input',render);$('status').addEventListener('change',re
   const placeBox=$('geo-places'),resultBox=$('geo-results'),statusBox=$('geo-status');
   const cache=new Map();let map=null,marker=null,selected=null,requestId=0,lastRequest=0;
   const note=message=>{statusBox.textContent=message;};
+  // Un groupe est affiché uniquement si sa propre fiche associe explicitement son territoire.
+  // Aucun point ne représente une position opérationnelle ou une zone de contrôle.
+  function documentedGroups(t){
+    return t.actors.filter(a=>a.Type==='Groupe armé'||a.Type==='Coalition');
+  }
+  function shortGroupCard(a){
+    const card=document.createElement('div');card.className='geo-gang-card';
+    const title=document.createElement('strong');title.textContent=a.Nom;card.appendChild(title);
+    const desc=document.createElement('p');
+    desc.textContent=[a['Rôle documenté'],a.Affiliation&&a.Affiliation!==a.Nom?'Affiliation : '+a.Affiliation:'',a['Date source']?'Source datée : '+a['Date source']:''].filter(Boolean).join(' · ');
+    card.appendChild(desc);
+    if(/^https:\/\//.test(a['URL primaire']||'')){
+      const link=document.createElement('a');link.href=a['URL primaire'];link.target='_blank';link.rel='noopener noreferrer';link.textContent='Lire la source ↗';card.appendChild(link);
+    }
+    return card;
+  }
   function showActors(t){
     resultBox.replaceChildren();
-    const heading=document.createElement('p');heading.textContent=`${t.actors.length} fiche(s) mentionnant « ${t.label} » dans le champ Territoire :`;resultBox.appendChild(heading);
+    const groups=documentedGroups(t);
+    const title=document.createElement('h4');title.textContent=`Groupes armés documentés : ${groups.length}`;resultBox.appendChild(title);
+    if(groups.length){groups.forEach(a=>resultBox.appendChild(shortGroupCard(a)));}
+    else {const empty=document.createElement('p');empty.textContent='Aucun groupe armé explicitement associé à ce territoire dans les fiches actuelles. Cela ne signifie pas une absence de groupes sur le terrain.';resultBox.appendChild(empty);}
+    const heading=document.createElement('p');heading.textContent=`Autres fiches mentionnant « ${t.label} » (${t.actors.length} au total) :`;resultBox.appendChild(heading);
     t.actors.forEach(a=>{const b=document.createElement('button');b.type='button';b.textContent=a.Nom+' · '+actorCategory(a);b.addEventListener('click',()=>{showActor(a);$('detail').scrollIntoView({behavior:'smooth',block:'nearest'});});resultBox.appendChild(b);});
   }
   async function locate(t){
@@ -306,7 +332,11 @@ $('q').addEventListener('input',render);$('status').addEventListener('change',re
     marker=L.marker([loc.lat,loc.lon]).addTo(map);
     const popup=document.createElement('div');const b=document.createElement('strong');b.textContent=t.label;popup.appendChild(b);
     const p=document.createElement('p');p.textContent='Repère géographique issu d’OpenStreetMap'+(t.broad?' (zone étendue)':'')+'. Ce point ne localise aucun incident.';popup.appendChild(p);
-    marker.bindPopup(popup).openPopup();map.setView([loc.lat,loc.lon],t.broad?9:12);
+    const groups=documentedGroups(t);
+    const gh=document.createElement('h4');gh.textContent='Groupes documentés dans la base : '+groups.length;popup.appendChild(gh);
+    if(groups.length){groups.forEach(a=>popup.appendChild(shortGroupCard(a)));}
+    else {const empty=document.createElement('p');empty.textContent='Aucun groupe armé identifié par les fiches de ce territoire.';popup.appendChild(empty);}
+    marker.bindPopup(popup,{maxWidth:360,minWidth:240,maxHeight:300}).openPopup();map.setView([loc.lat,loc.lon],t.broad?9:12);
     note('Repère trouvé : '+loc.name+'. Position indicative, sans lien avec un incident précis.');
   }
   territories.forEach(t=>{const b=document.createElement('button');b.type='button';b.dataset.place=t.label;b.setAttribute('aria-pressed','false');b.textContent=t.label+' ('+t.actors.length+')';b.addEventListener('click',()=>locate(t));placeBox.appendChild(b);});
